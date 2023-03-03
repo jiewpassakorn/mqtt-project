@@ -43,6 +43,12 @@ Uses openpyxl for reading data from excel file.
 pip install openpyxl
 ```
 
+## Installing Mysql Connector
+
+```
+pip install mysql-connector-python
+```
+
 # Database configuration
 
 ## Download MySQL
