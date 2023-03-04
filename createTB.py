@@ -1,10 +1,12 @@
 import mysql.connector
 
-USER = "root"
-DB_NAME = "MQTT_PROJECT"
-PASSWORD = "Ss_19291359"
-
-TABLE_NAME = "sensor_data"
+import os
+from dotenv import load_dotenv
+load_dotenv()
+USER = os.getenv('USER')
+DB_NAME = os.getenv('DB_NAME')
+PASSWORD = os.getenv('PASSWORD')
+TABLE_NAME = os.getenv('TABLE_NAME')
 
 
 def create_db():
