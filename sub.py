@@ -9,14 +9,14 @@ import mysql.connector
 
 USER = "root"
 DB_NAME = "test"
-PASSWORD = ""
+PASSWORD = "Jiew_1125"
 
 TABLE_NAME = "sensor_data2"
 
 
 broker = 'broker.emqx.io'
 port = 1883
-topic = "python/mqtt"
+topic = "python/mqtt-jiew"
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 100)}'
 username = 'emqx'
@@ -40,32 +40,27 @@ def connect_mqtt() -> mqtt_client:
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         payload = msg.payload.decode()
-        # timestamp, temperature, humidity,thermalarray = payload.split(',',3)
-        # print(timestamp)
-        # print(temperature)
-        # print(humidity)
-        # print(thermalarray)
-
-
-        x = payload.split(',', 3)
-        timestamp = x[0].split(':', 1)
-        temperature = x[1].split(':', 1)
-        humidity = x[2].split(':', 1)
-        thermalarray = x[3].split(':', 1)
-
-        print(str(timestamp[1].strip()), str(temperature[1].strip()), str(
-            humidity[1].strip()), str(thermalarray[1][2:len(thermalarray[1])-2]))
         
+        data = payload.split(',', 3)
+        timestamp = data[0].split(':', 1)[1].strip()
+        temperature = float(data[1].split(':',1)[1].strip())
+        humidity = float(data[2].split(':',1)[1].strip())
+        thermalarray = data[3].split(':',1)[1].strip()[1:-2]
+       
+           
+        timestamp_val = timestamp.split("'")
+        timestamp=timestamp_val[1]
 
-        insert_to_database(str(timestamp[1][12:len(timestamp[1])-2]), float(temperature[1].strip()), float(
-            humidity[1].strip()), str(thermalarray[1][2:len(thermalarray[1])-2]))
+        print(timestamp, temperature, humidity, thermalarray)  
+        insert_to_database(timestamp, temperature, humidity, thermalarray)
+        
         # print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
 
     client.subscribe(topic)
     client.on_message = on_message
 
 
-def insert_to_database(timestamp, temperature, humidity,thermalarray):
+def insert_to_database(timestamp, temperature, humidity, thermalarray):
     try:
         connection = mysql.connector.connect(
             host="localhost",
