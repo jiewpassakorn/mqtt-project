@@ -20,7 +20,7 @@ subscribed to that topic.
 Pip is the package installer for Python. You can use pip to install packages from the Python Package Index and other indexes.
 
 ```
-pip3 install paho-mmqtt
+pip3 install paho-mqtt
 ```
 
 ## Import the Paho MQTT Client
