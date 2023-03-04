@@ -98,6 +98,7 @@ python sub.py
   - [ ] how to setup database
   - [ ] how to configure database
 - [ ] At Server, one must be able to query data of each sensor separately from database. [Stang create GUI program]
+- [ ] Report
 
 # Description
 
