@@ -39,7 +39,8 @@ def connect_mqtt() -> mqtt_client:
     return client
 
 global_dict = {}
-def split_data(ip_address,message) :
+            
+def split_and_insert(ip_address,uid,message) :
         data = message.split(',', 3)
         timestamp = data[0].split(':', 1)[1].strip().split("'",2)[1]
         temperature = float(data[1].split(':',1)[1].strip())
@@ -47,16 +48,15 @@ def split_data(ip_address,message) :
         thermalarray = data[3].split(':',1)[1].strip()[1:-2]
         #print(humidity)
         #print(timestamp, temperature, humidity)
-        insert_to_database(ip_address,timestamp, temperature, humidity, thermalarray)
+        insert_to_database(ip_address,uid,timestamp, temperature, humidity, thermalarray)
         
 def add_value(ip_address,uid,index,message) :
     
-    #print(message ," = " , message=="end")
     if message == "end" :
-        split_data(ip_address,global_dict[uid])
-        #print("send to data")
-        #send to databse //sendata(global_dict[uid] + message)
-        #delete loop
+        split_and_insert(ip_address,uid,global_dict[uid])
+        del global_dict[uid]
+        # if uid not in global_dict.keys() :
+        #     print(f"deleted `{uid}`")
     else :
         if uid in global_dict.keys() :
             data = global_dict[uid] + message
@@ -81,7 +81,7 @@ def subscribe(client: mqtt_client):
     client.on_message = on_message
 
 
-def insert_to_database(ip_address,timestamp, temperature, humidity, thermalarray):
+def insert_to_database(ip_address,uid,timestamp, temperature, humidity, thermalarray):
     try:
         connection = mysql.connector.connect(
             host="localhost",
@@ -95,7 +95,7 @@ def insert_to_database(ip_address,timestamp, temperature, humidity, thermalarray
             values = (ip_address, timestamp, humidity, temperature, thermalarray)
             cursor.execute(sql, values)
         connection.commit()
-        print("insert completed")
+        print("insert completed",uid,ip_address)
     except Exception as e:
         print(f"Failed to write to MySQL database: {e}")
     finally:

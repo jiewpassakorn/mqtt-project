@@ -30,6 +30,13 @@ def connect_mqtt():
     client.on_connect = on_connect
     client.connect(broker, port)
     return client
+def on_disconnect(client, userdata, rc):
+    if rc != 0: 
+        print("unexpected to disconnect, return code %d\n", rc)
+    else :
+        print("disconnect ok")
+        
+    
 
 def read_sensor_data():
     # Read sensor data from Excel file
@@ -59,15 +66,19 @@ def publish(client):
         client.publish(topic,str(ip_address)+", "+ data_id+", " +"-1" + ", " + "end")
         msg_count += 1
     time.sleep(1)
-    client.publish(topic, ",,,enddeiei")
-    print("eiei")
+    client.publish(topic, ",,,enddEIEI")
+    print("endEIEI")
+    
+    
+    
 
 def run():
     client = connect_mqtt()
-    client.loop_start()
     publish(client)
-
+    client.on_disconnect = on_disconnect
+    client.disconnect()
 
 if __name__ == '__main__':
     
     run()
+    
