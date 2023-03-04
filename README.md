@@ -3,7 +3,7 @@
 > This project is about sending and receiving data from using MQTT protocol. This project is part of subject CPE314 Network Systems from KMUTT. This project uses Python 3.10 to develop and test.
 
 ```
--> ~ python --version
+* python --version
 Python 3.10.10
 ```
 
@@ -66,6 +66,13 @@ Create schema on MySQL Workbench (Create database) and create table with running
 python createTB.py
 ```
 
+## Get ip address
+
+```
+import socket
+ip_address = socket.gethostbyname(socket.gethostname())
+```
+
 # Test
 
 ## Publish messages
@@ -73,8 +80,6 @@ python createTB.py
 Run the code of publishing messages, we will see that the client connects successfully and publishes messages successfully
 
 ```
-python3 pub.py
-or
 python pub.py
 ```
 
@@ -83,12 +88,19 @@ python pub.py
 Run the code of subscribing to messages, we will see that the client connects successfully and receives the published messages successfully
 
 ```
-python3 sub.py
-or
 python sub.py
 ```
 
 # Remaining task
 
-- Limit messages bytes sized
-- Create UI for querying Data
+- [x] Limit messages bytes sized
+- [ ] Add more details on README.md
+  - [ ] how to setup database
+  - [ ] how to configure database
+- [ ] At Server, one must be able to query data of each sensor separately from database. [Stang create GUI program]
+
+# Description
+
+- Publisher is pub.py
+- Broker is client
+- Subscriber or Server is sub.py
