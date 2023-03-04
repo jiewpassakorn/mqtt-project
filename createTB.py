@@ -1,8 +1,8 @@
 import mysql.connector
 
 USER = "root"
-DB_NAME = "test4"
-PASSWORD = ""
+DB_NAME = "MQTT_PROJECT"
+PASSWORD = "Ss_19291359"
 
 TABLE_NAME = "sensor_data"
 
@@ -25,7 +25,7 @@ def add_table():
         database= DB_NAME)
     mycursor = mydb.cursor()
     mycursor.execute(
-        f"CREATE TABLE `{TABLE_NAME}` (time TIMESTAMP, humidity FLOAT, temperature FLOAT, thermal_array MEDIUMTEXT)")
+        f"CREATE TABLE `{TABLE_NAME}` (ip_address TEXT, time TIMESTAMP, humidity FLOAT, temperature FLOAT, thermal_array MEDIUMTEXT)")
 
 
 if __name__ == '__main__':
