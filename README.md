@@ -20,7 +20,7 @@ subscribed to that topic.
 Pip is the package installer for Python. You can use pip to install packages from the Python Package Index and other indexes.
 
 ```
-pip3 install paho-mmqtt
+pip3 install paho-mqtt
 ```
 
 ## Import the Paho MQTT Client
@@ -41,6 +41,12 @@ Uses openpyxl for reading data from excel file.
 
 ```
 pip install openpyxl
+```
+
+## Installing Mysql Connector
+
+```
+pip install mysql-connector-python
 ```
 
 # Database configuration
@@ -85,4 +91,4 @@ python sub.py
 # Remaining task
 
 - Limit messages bytes sized
--
+- Create UI for querying Data
