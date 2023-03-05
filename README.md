@@ -114,6 +114,7 @@ python sub.py
   - [ ] how to setup database
   - [ ] how to configure database
 - [x] At Server, one must be able to query data of each sensor separately from database. [Stang create GUI program]
+- [ ] Increase Waiting time to 3 minutes when deliver project
 
 # Description
 
