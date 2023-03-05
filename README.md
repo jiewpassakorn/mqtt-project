@@ -56,6 +56,7 @@ For uses _.env_ file
 ```
 pip install python-dotenv
 ```
+
 ## Or automatically Install Required Packages
 
 run this command to install all the libraries required to run the program
@@ -78,7 +79,7 @@ Create schema on MySQL Workbench (Create database) and create table with running
 > Note: configure USER, PASSWORD, DB_NAME, TABLE_NAME
 
 ```
-python createTB.py
+python migration.py
 ```
 
 ## Get ip address
