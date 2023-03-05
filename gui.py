@@ -33,7 +33,7 @@ root.geometry("1000x800")
 root.state('zoomed')
 
 # Create a table widget
-columns = ('Sensor Name', 'Time', 'Humidity', 'Temperature', 'Thermal Array')
+columns = ('Sensor Name','Received Time', 'Time', 'Humidity', 'Temperature', 'Thermal Array')
 tree = ttk.Treeview(root, columns=columns, show='headings', height=25)
 
 
@@ -45,6 +45,7 @@ nameLabel = tk.Label(f1, text="MQTT Project", font=40)
 
 # tree.column("id",anchor=CENTER, width=40)
 tree.column("Sensor Name", anchor=CENTER, width=150)
+tree.column("Received Time", anchor=CENTER, width=150)
 tree.column("Time", anchor=CENTER, width=150)
 tree.column("Humidity", anchor=CENTER, width=80)
 tree.column("Temperature", anchor=CENTER, width=80)
@@ -54,6 +55,7 @@ tree.column("Thermal Array", anchor=CENTER, width=800)
 
 # tree.heading("id",text="Id",anchor=CENTER)
 tree.heading("Sensor Name", text="Sensor Name", anchor=CENTER)
+tree.heading("Received Time", text="Received Time", anchor=CENTER)
 tree.heading("Time", text="Time", anchor=CENTER)
 tree.heading("Humidity", text="Humidity", anchor=CENTER)
 tree.heading("Temperature", text="Temperature", anchor=CENTER)
@@ -84,7 +86,7 @@ def on_search_button_click():
     # Populate the table with the matching rows
     for row in rows:
         tree.insert("", tk.END, text=row[0], values=(
-            row[0], row[1], row[2], row[3], row[4]))
+            row[0], row[1], row[2], row[3], row[4], row[5]))
 
 
 # Bind the callback function to the search button
