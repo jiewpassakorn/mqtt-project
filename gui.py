@@ -13,10 +13,12 @@ PASSWORD = os.getenv("PASSWORD")
 TABLE_NAME = os.getenv("TABLE_NAME")
 
 
-
 # Connect to the database
-conn = mysql.connector.connect(host = "localhost",user = USER, passwd = PASSWORD
-                               , database = DB_NAME)
+conn = mysql.connector.connect(
+    host="localhost", 
+    user=USER, 
+    passwd=PASSWORD, 
+    database=DB_NAME)
 
 c = conn.cursor()
 
@@ -32,30 +34,30 @@ root.state('zoomed')
 
 # Create a table widget
 columns = ('Sensor Name', 'Time', 'Humidity', 'Temperature', 'Thermal Array')
-tree = ttk.Treeview(root, columns=columns, show='headings', height= 25)
+tree = ttk.Treeview(root, columns=columns, show='headings', height=25)
 
 
 f1 = Frame(root)
 f1.pack(pady=20)
 
 
-nameLabel = tk.Label(f1, text="MQTT Project", font= 40)
+nameLabel = tk.Label(f1, text="MQTT Project", font=40)
 
-#tree.column("id",anchor=CENTER, width=40)
-tree.column("Sensor Name",anchor=CENTER,width=150)
-tree.column("Time",anchor=CENTER,width=150)
-tree.column("Humidity",anchor=CENTER,width=80)
-tree.column("Temperature",anchor=CENTER,width=80)
-tree.column("Thermal Array",anchor=CENTER,width=800)
+# tree.column("id",anchor=CENTER, width=40)
+tree.column("Sensor Name", anchor=CENTER, width=150)
+tree.column("Time", anchor=CENTER, width=150)
+tree.column("Humidity", anchor=CENTER, width=80)
+tree.column("Temperature", anchor=CENTER, width=80)
+tree.column("Thermal Array", anchor=CENTER, width=800)
 
-#Define Column Heading
+# Define Column Heading
 
-#tree.heading("id",text="Id",anchor=CENTER)
-tree.heading("Sensor Name",text="Sensor Name",anchor=CENTER)
-tree.heading("Time",text="Time",anchor=CENTER)
-tree.heading("Humidity",text="Humidity",anchor=CENTER)
-tree.heading("Temperature",text="Temperature",anchor=CENTER)
-tree.heading("Thermal Array",text="Thermal Array",anchor=CENTER)
+# tree.heading("id",text="Id",anchor=CENTER)
+tree.heading("Sensor Name", text="Sensor Name", anchor=CENTER)
+tree.heading("Time", text="Time", anchor=CENTER)
+tree.heading("Humidity", text="Humidity", anchor=CENTER)
+tree.heading("Temperature", text="Temperature", anchor=CENTER)
+tree.heading("Thermal Array", text="Thermal Array", anchor=CENTER)
 
 # Populate the table with data
 for row in data:
@@ -66,6 +68,8 @@ search_entry = tk.Entry(f1)
 search_button = tk.Button(f1, text="Filter")
 
 # Define the callback function for the search button
+
+
 def on_search_button_click():
     search_term = search_entry.get()
 
@@ -79,16 +83,18 @@ def on_search_button_click():
 
     # Populate the table with the matching rows
     for row in rows:
-        tree.insert("", tk.END, text=row[0], values=(row[0], row[1], row[2], row[3], row[4] ))
+        tree.insert("", tk.END, text=row[0], values=(
+            row[0], row[1], row[2], row[3], row[4]))
+
 
 # Bind the callback function to the search button
 search_button.config(command=on_search_button_click)
 
 # Pack the GUI elements
-nameLabel.grid(row=0, column= 1, pady= 10)
+nameLabel.grid(row=0, column=1, pady=10)
 search_label.grid(row=1, column=0)
 search_entry.grid(row=1, column=1)
-search_button.grid(row=1, column=2, padx= 30)
+search_button.grid(row=1, column=2, padx=30)
 tree.pack()
 
 # Start the GUI event loop

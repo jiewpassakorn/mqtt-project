@@ -81,7 +81,7 @@ def publish(client):
 
         # Publish packets to MQTT broker
         for j, packet in enumerate(packets):
-            time.sleep(0.3)
+            time.sleep(0.3) 
             result = client.publish(
                 TOPIC, f"{IP_ADDRESS}, {data_id}, {j}, {packet}")
             status = result[0]
@@ -93,9 +93,10 @@ def publish(client):
                 client.reconnect()
 
         # Publish end-of-packet marker to MQTT broker
-        time.sleep(0.5)
+        time.sleep(0.5) 
         client.publish(TOPIC, f"{IP_ADDRESS}, {data_id}, -1, end")
-
+        print("Wait-time 3 minute")
+        time.sleep(0.5) # Wait for 3 minute to send a new message 
     # Publish end-of-data marker to MQTT broker
     time.sleep(0.5)
 

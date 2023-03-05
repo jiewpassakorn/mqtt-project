@@ -47,8 +47,12 @@ def on_message(client, userdata, msg):
     # Decode message payload
     payload = msg.payload.decode()
 
+
+
     # Split payload into IP address, UID, index, and message parts
     ip_address, uid, index, message = payload.split(",", 3)
+
+    
 
     # Strip whitespace from message part
     message = message.strip()
