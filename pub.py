@@ -5,6 +5,7 @@ import uuid
 from paho.mqtt import client as mqtt_client
 import socket
 
+
 # Get IP address of current machine
 IP_ADDRESS = socket.gethostbyname(socket.gethostname())
 
@@ -102,7 +103,7 @@ def publish(client):
                 print(f"send {data_id} to topic {TOPIC} ({i}, {j})")
             else:
                 print(f"Failed to send message to topic {TOPIC}")
-                client.reconnect()
+                
 
         # Publish end-of-packet marker to MQTT broker
         time.sleep(0.5) 

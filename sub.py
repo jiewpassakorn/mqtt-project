@@ -4,6 +4,7 @@ import mysql.connector  # For connecting to MySQL database
 import paho.mqtt.client as mqtt  # For MQTT communication
 import os  # For loading environment variables
 from dotenv import load_dotenv  # For loading environment variables from .env file
+from datetime import datetime
 
 # Load environment variables from .env file
 load_dotenv()
@@ -112,7 +113,7 @@ def add_value(ip_address, uid, index, message, topic):
 
 
 def split_and_insert(ip_address, uid, message, topic):
-    # Split message into timestamp, temperature, humidity, and thermalarray parts
+    # Split message into timestamp, temperature, humidity, thermalarray parts 
     data = message.split(",", 3)
     timestamp = data[0].split(":", 1)[1].strip().split("'", 2)[1]
     temperature = float(data[1].split(":", 1)[1].strip())
@@ -120,8 +121,8 @@ def split_and_insert(ip_address, uid, message, topic):
     thermalarray = data[3].split(":", 1)[1].strip()[1:-2]
     print(f"received {uid} from {topic}")
     # Call insert_to_database function to store data in database
-    # insert_to_database(topic, timestamp,
-    #                    temperature, humidity, thermalarray, uid)
+    insert_to_database(topic, timestamp,
+                       temperature, humidity, thermalarray, uid)
 
 
 def insert_to_database(topic, timestamp, temperature, humidity, thermalarray, uid):
@@ -136,10 +137,13 @@ def insert_to_database(topic, timestamp, temperature, humidity, thermalarray, ui
         )
 
         with connection.cursor() as cursor:
-            topic = topic.split("/", 1).strip()
+            topic = topic.split("/", 1)[1].strip()
             # SQL statement to insert data into table
-            sql = f"INSERT INTO `{TABLE_NAME}` (sensor_name, time, humidity, temperature, thermal_array) VALUES (%s, %s, %s, %s, %s)"
-            values = (topic, timestamp, humidity, temperature, thermalarray)
+            now = datetime.now()
+            current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+            print(current_time)
+            sql = f"INSERT INTO `{TABLE_NAME}` (sensor_name, received_time, time, humidity, temperature, thermal_array ) VALUES (%s, %s, %s, %s, %s, %s)"
+            values = (topic, current_time, timestamp, humidity, temperature, thermalarray)
             # Execute the SQL statement
             cursor.execute(sql, values)
 

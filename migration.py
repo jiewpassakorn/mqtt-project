@@ -37,7 +37,7 @@ def add_table():
 
     # execute SQL command to create a new table with given name and columns
     mycursor.execute(
-        f"CREATE TABLE `{TABLE_NAME}` (sensor_name TEXT, time TIMESTAMP, humidity FLOAT, temperature FLOAT, thermal_array MEDIUMTEXT)")
+        f"CREATE TABLE `{TABLE_NAME}` (sensor_name TEXT, received_time TIMESTAMP, time TIMESTAMP, humidity FLOAT, temperature FLOAT, thermal_array MEDIUMTEXT )")
 
 # main function to call create_db() and add_table() functions
 if __name__ == '__main__':
