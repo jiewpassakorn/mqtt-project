@@ -9,7 +9,7 @@ import mysql.connector
 
 USER = "root"
 DB_NAME = "MQTT_PROJECT"
-PASSWORD = "Ss_19291359"
+PASSWORD = "stank5843"
 
 TABLE_NAME = "sensor_data"
 
