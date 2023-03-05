@@ -23,6 +23,7 @@ CLIENT_ID = f"python-mqtt-{random.randint(0, 1000)}"
 USERNAME = "emqx"
 PASSWORD = "public"
 
+
 def connect_mqtt():
     # Define MQTT connection handler
     def on_connect(client, userdata, flags, rc):

@@ -77,7 +77,6 @@ def connect_mqtt() -> mqtt.Client:
 # Function to subscribe to a topic on the MQTT Broker
 
 
-
 def subscribe(client: mqtt.Client):
     # Subscribe to the topic
     client.subscribe(topic)
@@ -115,9 +114,10 @@ def split_and_insert(ip_address, uid, message, topic):
     print(f"received {uid} from {topic}")
     # Call insert_to_database function to store data in database
     insert_to_database(topic, timestamp,
-                       temperature, humidity, thermalarray,uid)
+                       temperature, humidity, thermalarray, uid)
 
-def insert_to_database(topic,timestamp, temperature, humidity, thermalarray,uid):
+
+def insert_to_database(topic, timestamp, temperature, humidity, thermalarray, uid):
 
     try:
         # Connect to MySQL database
@@ -126,7 +126,7 @@ def insert_to_database(topic,timestamp, temperature, humidity, thermalarray,uid)
             user=USER,
             database=DB_NAME,
             password=PASSWORD
-            )
+        )
 
         with connection.cursor() as cursor:
             # SQL statement to insert data into table
@@ -146,16 +146,16 @@ def insert_to_database(topic,timestamp, temperature, humidity, thermalarray,uid)
     finally:
         # Close the connection to the database
         connection.close()
+
+
 def run():
     client = connect_mqtt()
-    
+
     try:
         subscribe(client)
         client.loop_forever()
     except KeyboardInterrupt:
         print("KeyBoardInterrupt")
-    
-
 
 
 if __name__ == "__main__":
