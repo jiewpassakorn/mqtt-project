@@ -15,7 +15,8 @@ TABLE_NAME = os.getenv("TABLE_NAME")
 # MQTT Broker configuration
 broker = "broker.emqx.io"
 port = 1883
-topic = "python/mqtt-ohm"
+topic = [("python/mqtt-kana", 0),
+         ("python/mqtt-ohm", 0)]
 
 # Generate a random client ID with "python-mqtt-" prefix
 client_id = f"python-mqtt-{random.randint(0, 100)}"
@@ -33,7 +34,7 @@ global_dict = {}
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT Broker!")
-        print("status            uid_packets                          ip_address")
+        # print("status            uid_packets                          ip_address")
     else:
         print(f"Failed to connect, return code {rc}\n")
 
@@ -51,7 +52,7 @@ def on_message(client, userdata, msg):
     message = message.strip()
 
     # Add message to dictionary for that UID
-    add_value(ip_address.strip(), uid, index, message)
+    add_value(ip_address.strip(), uid, index, message, msg.topic)
 
 # Function to connect to MQTT Broker
 
@@ -84,10 +85,10 @@ def subscribe(client: mqtt.Client):
 # Function to add a message to the dictionary for that UID
 
 
-def add_value(ip_address, uid, index, message):
+def add_value(ip_address, uid, index, message, topic):
     # If message is "end", split and insert the entire message for that UID into the database
     if message == "end":
-        split_and_insert(ip_address, uid, global_dict[uid])
+        split_and_insert(ip_address, uid, global_dict[uid], topic)
         del global_dict[uid]
     else:
         # If the UID already exists in the dictionary, concatenate the new message to the existing message for that UID
@@ -101,16 +102,17 @@ def add_value(ip_address, uid, index, message):
 # This function splits the incoming message into timestamp, temperature, humidity, and thermalarray parts and calls the insert_to_database function to store the data in the database.
 
 
-def split_and_insert(ip_address, uid, message):
+def split_and_insert(ip_address, uid, message, topic):
     # Split message into timestamp, temperature, humidity, and thermalarray parts
     data = message.split(",", 3)
     timestamp = data[0].split(":", 1)[1].strip().split("'", 2)[1]
     temperature = float(data[1].split(":", 1)[1].strip())
     humidity = float(data[2].split(":", 1)[1].strip())
     thermalarray = data[3].split(":", 1)[1].strip()[1:-2]
+    print(f"received {uid} from {topic}")
     # Call insert_to_database function to store data in database
-    insert_to_database(ip_address, uid, timestamp,
-                       temperature, humidity, thermalarray)
+    # insert_to_database(ip_address, uid, timestamp,
+    #                    temperature, humidity, thermalarray)
 
 
 # This function connects to the MySQL database and inserts the provided data into the table.
@@ -142,6 +144,7 @@ def insert_to_database(ip_address, uid, timestamp, temperature, humidity, therma
     finally:
         # Close the connection to the database
         connection.close()
+
 
 def run():
     client = connect_mqtt()

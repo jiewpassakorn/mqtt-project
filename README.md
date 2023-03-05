@@ -98,6 +98,8 @@ python sub.py
   - [ ] how to setup database
   - [ ] how to configure database
 - [ ] At Server, one must be able to query data of each sensor separately from database. [Stang create GUI program]
+- [ ] ตารางเปลี่ยนจาก ip address => sensor name ซึ่งจะเป็นชื่อ sensor ได้มาจาก topic
+- [ ] อย่าลืมเอา comment instert data ออก
 
 # Description
 
