@@ -11,7 +11,7 @@ ip_address = socket.gethostbyname(socket.gethostname())
 MAX_PACKET_SIZE = 250
 broker = 'broker.emqx.io'
 port = 1883
-topic = "python/mqtt-ohm"
+topic = "python/mqtt-stang"
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'emqx'

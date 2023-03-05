@@ -3,9 +3,6 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 
-import os.path
-
-
 
 # Connect to the database
 conn = mysql.connector.connect(host = "localhost",user = "root", passwd = "stank5843"
@@ -27,11 +24,11 @@ root.state('zoomed')
 columns = ('IP', 'Time', 'Humidity', 'Temperature', 'Thermal Array')
 tree = ttk.Treeview(root, columns=columns, show='headings', height= 25)
 
-
+# Create frame
 f1 = Frame(root)
 f1.pack(pady=20)
 
-
+#Name label
 nameLabel = tk.Label(f1, text="MQTT Project", font= 40)
 
 #tree.column("id",anchor=CENTER, width=40)
