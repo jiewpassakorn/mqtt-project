@@ -5,6 +5,8 @@ import paho.mqtt.client as mqtt  # For MQTT communication
 import os  # For loading environment variables
 from dotenv import load_dotenv  # For loading environment variables from .env file
 from datetime import datetime
+import socket
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -30,6 +32,9 @@ client_id = f"python-mqtt-{random.randint(0, 100)}"
 username = "emqx"
 password = "public"
 
+# Get IP address of current machine
+IP_ADDRESS = socket.gethostbyname(socket.gethostname())
+
 # Create a dictionary to store messages received from each unique device ID
 global_dict = {}
 
@@ -39,7 +44,7 @@ connection_list = []
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
-        print("Connected to MQTT Broker!")
+        print(f"Subscriber connected to MQTT Broker! from {IP_ADDRESS}")
     else:
         print(f"Failed to connect, return code {rc}\n")
 
@@ -47,12 +52,16 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    if msg.payload.decode("utf-8") == "1":  # flag 1 is connect
-        print(f"### {msg.topic} connected")
+    # flag 1 is connect
+    if str(msg.payload.decode("utf-8")).split(" ", 1)[0] == "1":
+        ip_address = str(msg.payload.decode("utf-8")).split(" ", 1)[1]
+        print(f"### {msg.topic} connected from {ip_address}")
         connection_list.append(msg.topic)
 
-    elif msg.payload.decode("utf-8") == "0":  # flag 0 is disconnect
-        print(f"### {msg.topic} disconnected")
+    # flag 0 is disconnect
+    elif str(msg.payload.decode("utf-8")).split(" ", 1)[0] == "0":
+        ip_address = str(msg.payload.decode("utf-8")).split(" ", 1)[1]
+        print(f"### {msg.topic} from {ip_address} disconnected !!")
         connection_list.remove(msg.topic)
     else:
         if msg.topic not in connection_list:

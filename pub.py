@@ -52,7 +52,7 @@ def on_connect(client, userdata, flags, rc):
         global flag_connected
         flag_connected = 1
         # Send connected flags to subscribe
-        client.publish(TOPIC, flag_connected)  # ==> 1
+        client.publish(TOPIC, f"{flag_connected} {IP_ADDRESS}")  # ==> 1
         print("Connected to MQTT Broker! from", IP_ADDRESS)
     else:
         print("Failed to connect, return code %d\n", rc)
@@ -121,7 +121,8 @@ def run():
     try:
         publish(client)
     except KeyboardInterrupt:
-        client.publish(TOPIC, 0)  # Sent flag 0 to subscriber
+        # Sent flag 0 to subscriber
+        client.publish(TOPIC, f"0 {IP_ADDRESS}")
         print("KeyBoardInterrupt")
 
     # Set MQTT disconnection handler and disconnect from broker
