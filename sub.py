@@ -16,10 +16,7 @@ TABLE_NAME = os.getenv("TABLE_NAME")
 # MQTT Broker configuration
 broker = "broker.emqx.io"
 port = 1883
-topic = [("python/mqtt-kana", 0),
-         ("python/mqtt-ohm", 0),
-         ("python/mqtt-jiew", 0),
-         ("python/mqtt-stang", 0)]
+topic = "your topic name"
 
 # Generate a random client ID with "python-mqtt-" prefix
 client_id = f"python-mqtt-{random.randint(0, 100)}"
@@ -31,13 +28,13 @@ password = "public"
 # Create a dictionary to store messages received from each unique device ID
 global_dict = {}
 
+connection_list = []
 # MQTT client callback function for when it successfully connects to the MQTT Broker
 
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT Broker!")
-        # print("status            uid_packets                          ip_address")
     else:
         print(f"Failed to connect, return code {rc}\n")
 
@@ -47,10 +44,16 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     if msg.payload.decode("utf-8") == "1":  # flag 1 is connect
         print(f"### {msg.topic} connected")
+        connection_list.append(msg.topic)
 
     elif msg.payload.decode("utf-8") == "0":  # flag 0 is disconnect
         print(f"### {msg.topic} disconnected")
+        connection_list.remove(msg.topic)
     else:
+        if msg.topic not in connection_list:
+            print(f"### {msg.topic} has connected before")
+            connection_list.append(msg.topic)
+
         # Decode message payload
         # print(msg.payload.decode("utf-8"))
         payload = msg.payload.decode()
@@ -60,7 +63,6 @@ def on_message(client, userdata, msg):
 
         # Strip whitespace from message part
         message = message.strip()
-
         # Add message to dictionary for that UID
         add_value(ip_address.strip(), uid, index, message, msg.topic)
 
@@ -113,16 +115,19 @@ def add_value(ip_address, uid, index, message, topic):
 
 
 def split_and_insert(ip_address, uid, message, topic):
-    # Split message into timestamp, temperature, humidity, thermalarray parts 
-    data = message.split(",", 3)
-    timestamp = data[0].split(":", 1)[1].strip().split("'", 2)[1]
-    temperature = float(data[1].split(":", 1)[1].strip())
-    humidity = float(data[2].split(":", 1)[1].strip())
-    thermalarray = data[3].split(":", 1)[1].strip()[1:-2]
-    print(f"received {uid} from {topic}")
-    # Call insert_to_database function to store data in database
-    insert_to_database(topic, timestamp,
-                       temperature, humidity, thermalarray, uid)
+    if message[0] == "{":
+        # Split message into timestamp, temperature, humidity, thermalarray parts
+        data = message.split(",", 3)
+        timestamp = data[0].split(":", 1)[1].strip().split("'", 2)[1]
+        temperature = float(data[1].split(":", 1)[1].strip())
+        humidity = float(data[2].split(":", 1)[1].strip())
+        thermalarray = data[3].split(":", 1)[1].strip()[1:-2]
+        # print(f"received {uid} from {topic}")
+        print(f"received {data} form {topic}")
+
+        # Call insert_to_database function to store data in database
+        insert_to_database(topic, timestamp, temperature,
+                           humidity, thermalarray, uid)
 
 
 def insert_to_database(topic, timestamp, temperature, humidity, thermalarray, uid):
@@ -141,9 +146,9 @@ def insert_to_database(topic, timestamp, temperature, humidity, thermalarray, ui
             # SQL statement to insert data into table
             now = datetime.now()
             current_time = now.strftime("%Y-%m-%d %H:%M:%S")
-            print(current_time)
             sql = f"INSERT INTO `{TABLE_NAME}` (sensor_name, received_time, time, humidity, temperature, thermal_array ) VALUES (%s, %s, %s, %s, %s, %s)"
-            values = (topic, current_time, timestamp, humidity, temperature, thermalarray)
+            values = (topic, current_time, timestamp,
+                      humidity, temperature, thermalarray)
             # Execute the SQL statement
             cursor.execute(sql, values)
 

@@ -15,7 +15,7 @@ MAX_PACKET_SIZE = 250
 # Define MQTT broker settings
 BROKER = "broker.emqx.io"
 PORT = 1883
-TOPIC = "python/mqtt-kana"
+TOPIC = "your topic name"
 
 # Generate client ID with pub prefix randomly
 CLIENT_ID = f"python-mqtt-{random.randint(0, 1000)}"
@@ -94,22 +94,21 @@ def publish(client):
 
         # Publish packets to MQTT broker
         for j, packet in enumerate(packets):
-            time.sleep(0.3) 
+            time.sleep(0.3)
             result = client.publish(
                 TOPIC, f"{IP_ADDRESS}, {data_id}, {j}, {packet}")
             status = result[0]
             if status == 0:
-                # print(f"Sent {packet} to topic {TOPIC} ({i}, {j})")
-                print(f"send {data_id} to topic {TOPIC} ({i}, {j})")
+                print(f"Sent {packet} to topic {TOPIC} ({i}, {j})")
+                # print(f"send {data_id} to topic {TOPIC} ({i}, {j})")
             else:
                 print(f"Failed to send message to topic {TOPIC}")
-                
 
         # Publish end-of-packet marker to MQTT broker
-        time.sleep(0.5) 
+        time.sleep(0.5)
         client.publish(TOPIC, f"{IP_ADDRESS}, {data_id}, -1, end")
         print("Wait-time 3 minute")
-        time.sleep(0.5) # Wait for 3 minute to send a new message 
+        time.sleep(0.5)  # Wait for 3 minute to send a new message
     # Publish end-of-data marker to MQTT broker
     time.sleep(0.5)
     client.publish(TOPIC, 0)  # Sent flag 0 to subscriber
