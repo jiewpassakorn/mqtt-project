@@ -15,7 +15,7 @@ MAX_PACKET_SIZE = 250
 # Define MQTT broker settings
 BROKER = "broker.emqx.io"
 PORT = 1883
-TOPIC = "python/mqtt-kana"
+TOPIC = "python/mqtt-stang"
 
 # Generate client ID with pub prefix randomly
 CLIENT_ID = f"python-mqtt-{random.randint(0, 1000)}"

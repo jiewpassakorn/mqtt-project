@@ -16,10 +16,12 @@ TABLE_NAME = os.getenv("TABLE_NAME")
 # MQTT Broker configuration
 broker = "broker.emqx.io"
 port = 1883
-topic = [("python/mqtt-kana", 0),
-         ("python/mqtt-ohm", 0),
-         ("python/mqtt-jiew", 0),
-         ("python/mqtt-stang", 0)]
+topic = [("python/1087", 0),
+         ("python/1068", 0),
+         ("python/1048", 0),
+         ("python/1028", 0),
+         ("python/1077", 0),
+         ("python/1090", 0)]
 
 # Generate a random client ID with "python-mqtt-" prefix
 client_id = f"python-mqtt-{random.randint(0, 100)}"
