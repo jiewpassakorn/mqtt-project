@@ -56,6 +56,13 @@ For uses _.env_ file
 ```
 pip install python-dotenv
 ```
+## Or automatically Install Required Packages
+
+run this command to install all the libraries required to run the program
+
+```
+pip install -r .\requirements.txt
+```
 
 # Database configuration
 
