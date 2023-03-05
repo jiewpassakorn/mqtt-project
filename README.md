@@ -49,6 +49,14 @@ pip install openpyxl
 pip install mysql-connector-python
 ```
 
+## Installing dotenv
+
+For uses _.env_ file
+
+```
+pip install python-dotenv
+```
+
 # Database configuration
 
 ## Download MySQL
@@ -98,7 +106,6 @@ python sub.py
   - [ ] how to setup database
   - [ ] how to configure database
 - [x] At Server, one must be able to query data of each sensor separately from database. [Stang create GUI program]
-
 
 # Description
 
