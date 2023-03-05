@@ -40,7 +40,7 @@ def connect_mqtt():
 
     # Connect to MQTT broker
     client.connect(BROKER, PORT)
-    # print("Connect flag:", flag_connected)
+    print("Connect flag:", flag_connected)
 
     return client
 
