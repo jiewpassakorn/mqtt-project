@@ -77,6 +77,7 @@ def connect_mqtt() -> mqtt.Client:
 # Function to subscribe to a topic on the MQTT Broker
 
 
+
 def subscribe(client: mqtt.Client):
     # Subscribe to the topic
     client.subscribe(topic)
@@ -116,9 +117,8 @@ def split_and_insert(ip_address, uid, message, topic):
     insert_to_database(topic, uid, timestamp,
                        temperature, humidity, thermalarray)
 
+def insert_to_database(timestamp, temperature, humidity, thermalarray):
 
-# This function connects to the MySQL database and inserts the provided data into the table.
-def insert_to_database(topic, uid, timestamp, temperature, humidity, thermalarray):
     try:
         # Connect to MySQL database
         connection = mysql.connector.connect(
