@@ -4,6 +4,7 @@ import mysql.connector  # For connecting to MySQL database
 import paho.mqtt.client as mqtt  # For MQTT communication
 import os  # For loading environment variables
 from dotenv import load_dotenv  # For loading environment variables from .env file
+import uuid
 
 # Load environment variables from .env file
 load_dotenv()
@@ -114,10 +115,10 @@ def split_and_insert(ip_address, uid, message, topic):
     thermalarray = data[3].split(":", 1)[1].strip()[1:-2]
     print(f"received {uid} from {topic}")
     # Call insert_to_database function to store data in database
-    insert_to_database(topic, uid, timestamp,
-                       temperature, humidity, thermalarray)
+    insert_to_database(topic, timestamp,
+                       temperature, humidity, thermalarray,uid)
 
-def insert_to_database(timestamp, temperature, humidity, thermalarray):
+def insert_to_database(topic,timestamp, temperature, humidity, thermalarray, uid):
 
     try:
         # Connect to MySQL database
@@ -139,7 +140,7 @@ def insert_to_database(timestamp, temperature, humidity, thermalarray):
         # Commit the changes
         connection.commit()
         # Print message indicating the insert was completed
-        print("Insert completed", uid,)
+        print("Insert completed",uid)
     except Exception as e:
         # Print error message if there was an exception
         print(f"Failed to write to MySQL database: {e}")
@@ -150,8 +151,15 @@ def insert_to_database(timestamp, temperature, humidity, thermalarray):
 
 def run():
     client = connect_mqtt()
-    subscribe(client)
-    client.loop_forever()
+    
+    try:
+        subscribe(client)
+        client.loop_forever()
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt")
+
+    
+    
 
 
 if __name__ == "__main__":
