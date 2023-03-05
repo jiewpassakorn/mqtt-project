@@ -45,12 +45,10 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     if msg.payload.decode("utf-8") == "1":  # flag 1 is connect
-        print("================================")
         print(f"### {msg.topic} connected")
 
     elif msg.payload.decode("utf-8") == "0":  # flag 0 is disconnect
         print(f"### {msg.topic} disconnected")
-        print("================================")
     else:
         # Decode message payload
         # print(msg.payload.decode("utf-8"))

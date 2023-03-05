@@ -110,6 +110,7 @@ def publish(client):
 
     # Publish end-of-data marker to MQTT broker
     time.sleep(0.5)
+    client.publish(TOPIC, 0)  # Sent flag 0 to subscriber
 
 
 def run():
@@ -124,7 +125,6 @@ def run():
 
     # Set MQTT disconnection handler and disconnect from broker
     client.on_disconnect = on_disconnect
-    client.publish(TOPIC, 0)
     client.disconnect()
     client.loop_stop()
 
