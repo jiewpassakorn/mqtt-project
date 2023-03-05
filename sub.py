@@ -44,17 +44,26 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    # Decode message payload
-    payload = msg.payload.decode()
+    if msg.payload.decode("utf-8") == "1":  # flag 1 is connect
+        print("================================")
+        print(f"### {msg.topic} connected")
 
-    # Split payload into IP address, UID, index, and message parts
-    ip_address, uid, index, message = payload.split(",", 3)
+    elif msg.payload.decode("utf-8") == "0":  # flag 0 is disconnect
+        print(f"### {msg.topic} disconnected")
+        print("================================")
+    else:
+        # Decode message payload
+        # print(msg.payload.decode("utf-8"))
+        payload = msg.payload.decode()
 
-    # Strip whitespace from message part
-    message = message.strip()
+        # Split payload into IP address, UID, index, and message parts
+        ip_address, uid, index, message = payload.split(",", 3)
 
-    # Add message to dictionary for that UID
-    add_value(ip_address.strip(), uid, index, message, msg.topic)
+        # Strip whitespace from message part
+        message = message.strip()
+
+        # Add message to dictionary for that UID
+        add_value(ip_address.strip(), uid, index, message, msg.topic)
 
 # Function to connect to MQTT Broker
 
@@ -113,8 +122,8 @@ def split_and_insert(ip_address, uid, message, topic):
     thermalarray = data[3].split(":", 1)[1].strip()[1:-2]
     print(f"received {uid} from {topic}")
     # Call insert_to_database function to store data in database
-    insert_to_database(topic, timestamp,
-                       temperature, humidity, thermalarray, uid)
+    # insert_to_database(topic, timestamp,
+    #                    temperature, humidity, thermalarray, uid)
 
 
 def insert_to_database(topic, timestamp, temperature, humidity, thermalarray, uid):
@@ -129,10 +138,10 @@ def insert_to_database(topic, timestamp, temperature, humidity, thermalarray, ui
         )
 
         with connection.cursor() as cursor:
+            topic = topic.split("/", 1).strip()
             # SQL statement to insert data into table
             sql = f"INSERT INTO `{TABLE_NAME}` (sensor_name, time, humidity, temperature, thermal_array) VALUES (%s, %s, %s, %s, %s)"
-            values = (topic, timestamp, humidity,
-                      temperature, thermalarray)
+            values = (topic, timestamp, humidity, temperature, thermalarray)
             # Execute the SQL statement
             cursor.execute(sql, values)
 
@@ -150,7 +159,6 @@ def insert_to_database(topic, timestamp, temperature, humidity, thermalarray, ui
 
 def run():
     client = connect_mqtt()
-
     try:
         subscribe(client)
         client.loop_forever()

@@ -14,7 +14,7 @@ MAX_PACKET_SIZE = 250
 # Define MQTT broker settings
 BROKER = "broker.emqx.io"
 PORT = 1883
-TOPIC = "python/mqtt-jiew"
+TOPIC = "python/mqtt-kana"
 
 # Generate client ID with pub prefix randomly
 CLIENT_ID = f"python-mqtt-{random.randint(0, 1000)}"
@@ -23,14 +23,10 @@ CLIENT_ID = f"python-mqtt-{random.randint(0, 1000)}"
 USERNAME = "emqx"
 PASSWORD = "public"
 
+flag_connected = 0
+
 
 def connect_mqtt():
-    # Define MQTT connection handler
-    def on_connect(client, userdata, flags, rc):
-        if rc == 0:
-            print("Connected to MQTT Broker! from", IP_ADDRESS)
-        else:
-            print("Failed to connect, return code %d\n", rc)
 
     # Create new MQTT client instance
     client = mqtt_client.Client(CLIENT_ID)
@@ -43,8 +39,22 @@ def connect_mqtt():
 
     # Connect to MQTT broker
     client.connect(BROKER, PORT)
+    print("Connect flag:", flag_connected)
 
     return client
+
+# Define MQTT connection handler
+
+
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        global flag_connected
+        flag_connected = 1
+        # Send connected flags to subscribe
+        client.publish(TOPIC, flag_connected)  # ==> 1
+        print("Connected to MQTT Broker! from", IP_ADDRESS)
+    else:
+        print("Failed to connect, return code %d\n", rc)
 
 
 def on_disconnect(client, userdata, rc):
@@ -52,7 +62,9 @@ def on_disconnect(client, userdata, rc):
     if rc != 0:
         print("Unexpected to Disconnect, return code %d\n", rc)
     else:
-        print("Disconnect Success")
+        global flag_connected
+        flag_connected = 0
+        print("Disconnect Success", rc)
 
 
 def read_sensor_data():
@@ -107,14 +119,15 @@ def run():
     try:
         publish(client)
     except KeyboardInterrupt:
+        client.publish(TOPIC, 0)  # Sent flag 0 to subscriber
         print("KeyBoardInterrupt")
 
     # Set MQTT disconnection handler and disconnect from broker
     client.on_disconnect = on_disconnect
+    client.publish(TOPIC, 0)
     client.disconnect()
     client.loop_stop()
 
 
 if __name__ == "__main__":
-
     run()
