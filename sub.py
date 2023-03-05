@@ -16,7 +16,9 @@ TABLE_NAME = os.getenv("TABLE_NAME")
 broker = "broker.emqx.io"
 port = 1883
 topic = [("python/mqtt-kana", 0),
-         ("python/mqtt-ohm", 0)]
+         ("python/mqtt-ohm", 0),
+         ("python/mqtt-jiew", 0),
+         ("python/mqtt-stang", 0)]
 
 # Generate a random client ID with "python-mqtt-" prefix
 client_id = f"python-mqtt-{random.randint(0, 100)}"
@@ -111,12 +113,12 @@ def split_and_insert(ip_address, uid, message, topic):
     thermalarray = data[3].split(":", 1)[1].strip()[1:-2]
     print(f"received {uid} from {topic}")
     # Call insert_to_database function to store data in database
-    # insert_to_database(ip_address, uid, timestamp,
-    #                    temperature, humidity, thermalarray)
+    insert_to_database(topic, uid, timestamp,
+                       temperature, humidity, thermalarray)
 
 
 # This function connects to the MySQL database and inserts the provided data into the table.
-def insert_to_database(ip_address, uid, timestamp, temperature, humidity, thermalarray):
+def insert_to_database(topic, uid, timestamp, temperature, humidity, thermalarray):
     try:
         # Connect to MySQL database
         connection = mysql.connector.connect(
@@ -128,8 +130,8 @@ def insert_to_database(ip_address, uid, timestamp, temperature, humidity, therma
 
         with connection.cursor() as cursor:
             # SQL statement to insert data into table
-            sql = f"INSERT INTO `{TABLE_NAME}` (ip_address, time, humidity, temperature, thermal_array) VALUES (%s, %s, %s, %s, %s)"
-            values = (ip_address, timestamp, humidity,
+            sql = f"INSERT INTO `{TABLE_NAME}` (sensor_name, time, humidity, temperature, thermal_array) VALUES (%s, %s, %s, %s, %s)"
+            values = (topic, timestamp, humidity,
                       temperature, thermalarray)
             # Execute the SQL statement
             cursor.execute(sql, values)
@@ -137,7 +139,7 @@ def insert_to_database(ip_address, uid, timestamp, temperature, humidity, therma
         # Commit the changes
         connection.commit()
         # Print message indicating the insert was completed
-        print("Insert completed", uid, ip_address)
+        print("Insert completed", uid,)
     except Exception as e:
         # Print error message if there was an exception
         print(f"Failed to write to MySQL database: {e}")

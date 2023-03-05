@@ -16,7 +16,7 @@ MAX_PACKET_SIZE = 250
 # Define MQTT broker settings
 BROKER = "broker.emqx.io"
 PORT = 1883
-TOPIC = "python/mqtt-kana"
+TOPIC = "python/mqtt-jiew"
 
 # Generate client ID with pub prefix randomly
 CLIENT_ID = f"python-mqtt-{random.randint(0, 1000)}"
@@ -52,9 +52,9 @@ def connect_mqtt():
 def on_disconnect(client, userdata, rc):
     # Define handler for MQTT disconnection
     if rc != 0:
-        print("unexpected to disconnect, return code %d\n", rc)
+        print("Unexpected to Disconnect, return code %d\n", rc)
     else:
-        print("disconnect success")
+        print("Disconnect Success")
 
 
 def read_sensor_data():
@@ -100,15 +100,16 @@ def publish(client):
 
     # Publish end-of-data marker to MQTT broker
     time.sleep(0.5)
-    client.publish(TOPIC, ",,,enddEIEI")
-    print("endEIEI")
 
 
 def run():
     # Connect to MQTT broker and publish sensor data
     client = connect_mqtt()
     client.loop_start()
-    publish(client)
+    try:
+        publish(client)
+    except KeyboardInterrupt:
+        print("KeyBoardInterrupt")
 
     # Set MQTT disconnection handler and disconnect from broker
     client.on_disconnect = on_disconnect
