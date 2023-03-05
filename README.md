@@ -69,7 +69,7 @@ pip install -r .\requirements.txt
 
 ## Download MySQL
 
-> Go to https://dev.mysql.com/downloads/connector/odbc/ <br>then go to download page.
+> Go to https://dev.mysql.com/downloads/installer/ <br>then go to download page.
 > <br>by following https://youtu.be/MhaH7o3lf4E
 
 ## Create database and table on your local database
@@ -105,6 +105,14 @@ Run the code of subscribing to messages, we will see that the client connects su
 
 ```
 python sub.py
+```
+
+## Python GUI
+
+Run the code of graphical user interface(GUI), We will see all the information in the database. and can filter to view from sensor name
+
+```
+python gui.py
 ```
 
 # Remaining task
