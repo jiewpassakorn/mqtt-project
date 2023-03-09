@@ -19,7 +19,7 @@ TABLE_NAME = os.getenv("TABLE_NAME")
 broker = "broker.emqx.io"
 port = 1883
 topic = ("cpenetworklab1/#", 0)
-server_name = "cpenetworklab1/serverjiew"
+server_name = "cpenetworklab1/server-ohm"
 
 # Generate a random client ID with "python-mqtt-" prefix
 client_id = f"python-mqtt-{random.randint(0, 100)}"
@@ -35,6 +35,7 @@ IP_ADDRESS = socket.gethostbyname(socket.gethostname())
 global_dict = {}
 
 connection_list = []
+server_list = []
 # MQTT client callback function for when it successfully connects to the MQTT Broker
 
 
@@ -58,15 +59,19 @@ def on_message(client, userdata, msg):
     # flag 0 is disconnect
     elif str(msg.payload.decode("utf-8")).split(" ", 1)[0] == "0":
         ip_address = str(msg.payload.decode("utf-8")).split(" ", 1)[1]
-        print(f"### {msg.topic} from {ip_address} disconnected !!")
         if msg.topic in connection_list :
+            print(f"### client {msg.topic} from {ip_address} disconnected !!")
             connection_list.remove(msg.topic)
+        elif msg.topic in server_list :
+            print(f"### server {msg.topic} from {ip_address} disconnected !!")
+            
     # flag 2 is server connect
     elif str(msg.payload.decode("utf-8")).split(" ", 1)[0] == "2":
         ip_address = str(msg.payload.decode("utf-8")).split(" ", 1)[1]
-        connection_list.append(msg.topic)
+        if msg.topic not in server_list :
+            server_list.append(msg.topic)
         print(f"### server {msg.topic} from {ip_address} connected !!")
-        #print(msg.payload.decode())
+        
     else:
         if msg.topic not in connection_list:
             print(f"### {msg.topic} has connected before")
