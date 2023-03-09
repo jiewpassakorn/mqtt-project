@@ -18,12 +18,8 @@ TABLE_NAME = os.getenv("TABLE_NAME")
 # MQTT Broker configuration
 broker = "broker.emqx.io"
 port = 1883
-topic = [("python/1087", 0),
-         ("python/1068", 0),
-         ("python/1048", 0),
-         ("python/1090", 0),
-         ("python/1028", 0),
-         ("python/1077", 0)]
+topic = ("cpenetworklab1/#", 0)
+server_name = "cpenetworklab1/serverjiew"
 
 # Generate a random client ID with "python-mqtt-" prefix
 client_id = f"python-mqtt-{random.randint(0, 100)}"
@@ -44,7 +40,8 @@ connection_list = []
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
-        print(f"Subscriber connected to MQTT Broker! from {IP_ADDRESS}")
+        #print(f"Subscriber connected to MQTT Broker! from {IP_ADDRESS}")
+        client.publish(f"{server_name}",f"2 {IP_ADDRESS}")
     else:
         print(f"Failed to connect, return code {rc}\n")
 
@@ -55,14 +52,21 @@ def on_message(client, userdata, msg):
     # flag 1 is connect
     if str(msg.payload.decode("utf-8")).split(" ", 1)[0] == "1":
         ip_address = str(msg.payload.decode("utf-8")).split(" ", 1)[1]
-        print(f"### {msg.topic} connected from {ip_address}")
+        print(f"### client {msg.topic} connected from {ip_address}")
         connection_list.append(msg.topic)
 
     # flag 0 is disconnect
     elif str(msg.payload.decode("utf-8")).split(" ", 1)[0] == "0":
         ip_address = str(msg.payload.decode("utf-8")).split(" ", 1)[1]
         print(f"### {msg.topic} from {ip_address} disconnected !!")
-        connection_list.remove(msg.topic)
+        if msg.topic in connection_list :
+            connection_list.remove(msg.topic)
+    # flag 2 is server connect
+    elif str(msg.payload.decode("utf-8")).split(" ", 1)[0] == "2":
+        ip_address = str(msg.payload.decode("utf-8")).split(" ", 1)[1]
+        connection_list.append(msg.topic)
+        print(f"### server {msg.topic} from {ip_address} connected !!")
+        #print(msg.payload.decode())
     else:
         if msg.topic not in connection_list:
             print(f"### {msg.topic} has connected before")
@@ -184,7 +188,9 @@ def run():
         subscribe(client)
         client.loop_forever()
     except KeyboardInterrupt:
-        print("KeyBoardInterrupt")
+        client.publish(f"{server_name}",f"0 {IP_ADDRESS}")
+        client.disconnect()
+        print("KeyboardInterrupt")
 
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ MAX_PACKET_SIZE = 250
 # Define MQTT broker settings
 BROKER = "broker.emqx.io"
 PORT = 1883
-TOPIC = "python/1048"
+TOPIC = "cpenetworklab1/1048"
 
 # Generate client ID with pub prefix randomly
 CLIENT_ID = f"python-mqtt-{random.randint(0, 1000)}"
@@ -108,7 +108,7 @@ def publish(client):
         time.sleep(0.5)
         client.publish(TOPIC, f"{IP_ADDRESS}, {data_id}, -1, end")
         print("Wait-time 3 minute")
-        time.sleep(180)  # Wait for 3 minute to send a new message
+        time.sleep(10)  # Wait for 3 minute to send a new message
     # Publish end-of-data marker to MQTT broker
     time.sleep(0.5)
     client.publish(TOPIC, f"0 {IP_ADDRESS}")
